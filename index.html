@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-gap: 10px;
+        }
+        .memory-card {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform: scale(1);
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        .memory-card.flip {
+            transform: rotateY(180deg);
+        }
+        .memory-card .front-face, .memory-card .back-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+        }
+        .front-face {
+            background-color: #fff;
+            color: #333;
+            transform: rotateY(180deg);
+            border: 2px solid #ccc;
+        }
+        .back-face {
+            background-color: #2e3d49;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="memory-game">
+        <div class="memory-card" data-framework="A">
+            <div class="front-face">A</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="A">
+            <div class="front-face">A</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="B">
+            <div class="front-face">B</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="C">
+            <div class="front-face">C</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="D">
+            <div class="front-face">D</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="E">
+            <div class="front-face">E</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="F">
+            <div class="front-face">F</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="G">
+            <div class="front-face">G</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="H">
+            <div class="front-face">H</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="I">
+            <div class="front-face">I</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="J">
+            <div class="front-face">J</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="K">
+            <div class="front-face">K</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="L">
+            <div class="front-face">L</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="M">
+            <div class="front-face">M</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="N">
+            <div class="front-face">N</div>
+            <div class="back-face">?</div>
+        </div>
+        <div class="memory-card" data-framework="O">
+            <div class="front-face">O</div>
+            <div class="back-face">?</div>
+        </div>
+    </div>
+    <script>
+        const cards = document.querySelectorAll('.memory-card');
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            this.classList.add('flip');
+
+            if (!hasFlippedCard) {
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.framework === secondCard.dataset.framework;
+
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+
+            setTimeout(() => {
+                firstCard.classList.remove('flip');
+                secondCard.classList.remove('flip');
+
+                resetBoard();
+            }, 1500);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        (function shuffle() {
+            cards.forEach(card => {
+                let randomPos = Math.floor(Math.random() * 16);
+                card.style.order = randomPos;
+            });
+        })();
+
+        cards.forEach(card => card.addEventListener('click', flipCard));
+    </script>
+</body>
+</html>
